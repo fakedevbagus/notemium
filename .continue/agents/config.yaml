@@ -1,0 +1,10 @@
+{
+  "models": [
+    {
+      "title": "Gemini 1.5 Pro",
+      "provider": "google",
+      "model": "gemini-1.5-pro",
+      "apiKey": "IAIzaSyAH9dfahK8tOxmF04PZV9bgrPUpnBDggiQ"
+    }
+  ]
+}
