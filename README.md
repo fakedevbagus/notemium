@@ -61,10 +61,10 @@ A professional-grade, feature-rich note-taking web application built with **Next
 3. **Start development servers**
    ```bash
    # Terminal 1 — Backend (http://localhost:3001)
-   npm run dev:backend
+   npm run start:dev
 
    # Terminal 2 — Frontend (http://localhost:3000)
-   npm run dev:frontend
+   npm run dev
    ```
 
 > **Note:** PostgreSQL is optional for local development. If unavailable, the backend automatically falls back to in-memory storage.
