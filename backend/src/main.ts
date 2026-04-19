@@ -26,9 +26,13 @@ async function bootstrap() {
     }),
   );
 
+  app.enableCors({
+    origin: "*",
+  });
+
   const port = Number(process.env.PORT ?? DEFAULT_PORT);
 
-  await app.listen(port);
+  await app.listen(process.env.PORT || 3001);
   logger.log(`🚀 Notemium API running on http://localhost:${port}/api`);
 }
 void bootstrap();
