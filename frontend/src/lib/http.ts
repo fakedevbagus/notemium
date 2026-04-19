@@ -19,8 +19,19 @@ export async function request<T>(
   });
 
   if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
+    // Try to extract error message from response body
+    let message = `Request failed with status ${response.status}`;
+    try {
+      const body = await response.json();
+      if (body?.message) message = body.message;
+    } catch {
+      // Response body is not JSON — use default message
+    }
+    throw new Error(message);
   }
 
-  return response.json() as Promise<T>;
+  // Handle empty responses (e.g. 204 No Content from DELETE)
+  const text = await response.text();
+  if (!text) return undefined as T;
+  return JSON.parse(text) as T;
 }

@@ -26,14 +26,13 @@ interface FoldersState {
   deleteFolder: (id: number) => Promise<void>;
 }
 
-export const useFoldersStore = create<FoldersState>((set) => ({
+export const useFoldersStore = create<FoldersState>((set, get) => ({
   folders: [],
   selectedId: null,
   loading: false,
   error: null,
   fetchFolders: async () => {
     set({ loading: true, error: null });
-
     try {
       const folders = await fetchFoldersRequest();
       set({ folders, loading: false });
@@ -46,44 +45,42 @@ export const useFoldersStore = create<FoldersState>((set) => ({
   },
   selectFolder: (id) => set({ selectedId: id }),
   createFolder: async (data) => {
-    set({ loading: true, error: null });
-
+    set({ error: null });
     try {
       await createFolderRequest(data);
       const folders = await fetchFoldersRequest();
-      set({ folders, loading: false });
+      set({ folders });
     } catch (error) {
       set({
         error: error instanceof Error ? error.message : 'Failed to create folder',
-        loading: false,
       });
     }
   },
   updateFolder: async (id, data) => {
-    set({ loading: true, error: null });
-
+    set({ error: null });
     try {
       await updateFolderRequest(id, data);
       const folders = await fetchFoldersRequest();
-      set({ folders, loading: false });
+      set({ folders });
     } catch (error) {
       set({
         error: error instanceof Error ? error.message : 'Failed to update folder',
-        loading: false,
       });
     }
   },
   deleteFolder: async (id) => {
-    set({ loading: true, error: null });
-
+    set({ error: null });
     try {
       await deleteFolderRequest(id);
       const folders = await fetchFoldersRequest();
-      set({ folders, loading: false });
+      const currentSelected = get().selectedId;
+      set({
+        folders,
+        selectedId: currentSelected === id ? null : currentSelected,
+      });
     } catch (error) {
       set({
         error: error instanceof Error ? error.message : 'Failed to delete folder',
-        loading: false,
       });
     }
   },

@@ -1,11 +1,11 @@
 {
-  "name": "Notepad Pro",
-  "short_name": "Notepad",
+  "name": "Notemium",
+  "short_name": "Notemium",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#111827",
-  "description": "Professional-grade, feature-rich notepad app.",
+  "description": "Professional-grade, feature-rich note-taking app.",
   "icons": [
     {
       "src": "/favicon.ico",

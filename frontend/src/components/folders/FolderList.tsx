@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 export interface FolderListFolder {
   id: number;
   name: string;
@@ -10,16 +9,28 @@ export interface FolderListFolder {
 
 export default function FolderList({ folders, onSelect, selectedId }: { folders: FolderListFolder[]; onSelect: (id: number) => void; selectedId: number | null }) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-0.5">
       {folders.map(folder => (
         <div
           key={folder.id}
-          className={`p-3 rounded cursor-pointer border transition-colors ${selectedId === folder.id ? 'bg-green-100 dark:bg-green-900 border-green-400' : 'hover:bg-gray-100 dark:hover:bg-gray-800 border-transparent'}`}
+          role="button"
+          tabIndex={0}
+          className={`p-2.5 rounded-lg cursor-pointer border transition-all duration-150
+            ${selectedId === folder.id
+              ? 'bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-800'
+              : 'hover:bg-gray-50 dark:hover:bg-gray-800/50 border-transparent'
+            }`}
           onClick={() => onSelect(folder.id)}
+          onKeyDown={(e) => { if (e.key === 'Enter') onSelect(folder.id); }}
         >
-          <div className="font-semibold">{folder.name}</div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-sm">📁</span>
+            <span className="font-medium text-sm truncate">{folder.name}</span>
+          </div>
           {typeof folder.noteCount === 'number' && (
-            <div className="text-sm text-gray-500 dark:text-gray-400">{folder.noteCount} notes</div>
+            <div className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 ml-6">
+              {folder.noteCount} note{folder.noteCount !== 1 ? 's' : ''}
+            </div>
           )}
         </div>
       ))}
