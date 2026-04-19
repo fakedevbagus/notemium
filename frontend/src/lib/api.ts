@@ -28,8 +28,21 @@ type NoteUpdatePayload = Partial<
   }
 >;
 
-export async function fetchNotes() {
-  return request<Note[]>('/notes');
+type PaginatedResponse<T> = {
+  data: T[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+};
+
+export async function fetchNotes(): Promise<Note[]> {
+  const result = await request<PaginatedResponse<Note> | Note[]>('/notes');
+  // Handle both paginated (new) and plain array (legacy) responses
+  if (Array.isArray(result)) return result;
+  return result.data;
 }
 
 export async function fetchNote(id: number) {

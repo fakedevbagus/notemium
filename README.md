@@ -4,7 +4,8 @@ A professional-grade, feature-rich note-taking web application built with **Next
 
 ## ✨ Features
 
-- **Notes** — Create, edit, delete, pin, archive, and organize notes
+- **Notes** — Create, edit, soft-delete (trash), pin, archive, and organize notes
+- **Pagination** — Paginated API responses with metadata
 - **Folders** — Organize notes into folders with nested support
 - **Search** — Full-text search across notes and folders
 - **Authentication** — JWT-based auth with per-user note ownership
@@ -87,7 +88,9 @@ A professional-grade, feature-rich note-taking web application built with **Next
 |----------|-------------|---------|
 | `NEXT_PUBLIC_API_BASE_URL` | Backend API URL | `http://localhost:3001/api` |
 | `DATABASE_URL` | PostgreSQL connection string | — |
-| `JWT_SECRET` | Secret for JWT signing | — |
+| `JWT_SECRET` | Secret for JWT signing | `dev-notepad-secret` |
+| `PORT` | Backend server port | `3001` |
+| `CORS_ORIGIN` | Allowed CORS origin | `*` |
 | `AI_API_KEY` | API key for AI features | — |
 
 ## 🐳 Docker Compose

@@ -6,6 +6,7 @@ import {
   IsString,
   Min,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateNoteDto {
   @IsString()
@@ -55,4 +56,33 @@ export class UpdateNoteDto {
   @IsOptional()
   @IsBoolean()
   readonly isTrashed?: boolean;
+}
+
+/** Query params for paginated note listing */
+export class NotesQueryDto {
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  readonly page?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  readonly limit?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  readonly folderId?: number;
+
+  @IsOptional()
+  @IsString()
+  readonly search?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly trashed?: string;
 }

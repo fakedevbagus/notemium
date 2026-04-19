@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { CurrentUserId } from '../auth/current-user.decorator';
 import { OptionalJwtAuthGuard } from '../auth/optional-jwt-auth.guard';
 import { FoldersService } from './folders.service';
@@ -15,8 +25,8 @@ export class FoldersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @CurrentUserId() userId?: number) {
-    return this.foldersService.findOne(+id, userId);
+  findOne(@Param('id', ParseIntPipe) id: number, @CurrentUserId() userId?: number) {
+    return this.foldersService.findOne(id, userId);
   }
 
   @Post()
@@ -26,15 +36,15 @@ export class FoldersController {
 
   @Put(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateFolderDto: UpdateFolderDto,
     @CurrentUserId() userId?: number,
   ) {
-    return this.foldersService.update(+id, updateFolderDto, userId);
+    return this.foldersService.update(id, updateFolderDto, userId);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string, @CurrentUserId() userId?: number) {
-    return this.foldersService.remove(+id, userId);
+  remove(@Param('id', ParseIntPipe) id: number, @CurrentUserId() userId?: number) {
+    return this.foldersService.remove(id, userId);
   }
 }

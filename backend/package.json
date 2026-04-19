@@ -1,6 +1,6 @@
 {
   "name": "notemium-backend",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "start": "nest start",
@@ -14,16 +14,13 @@
     "@nestjs/common": "^11.1.19",
     "@nestjs/core": "^11.1.19",
     "@nestjs/jwt": "^11.0.1",
-    "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.1.19",
-    "@nestjs/websockets": "^11.1.9",
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
-    "mongoose": "^8.0.0",
-    "passport": "^0.6.0",
-    "passport-jwt": "^4.0.1",
-    "pg": "^8.10.0"
+    "pg": "^8.10.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.10",

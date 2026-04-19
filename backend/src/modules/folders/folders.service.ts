@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 import { InMemoryStore, StoredFolder } from '../../database/in-memory.store';
 import { CreateFolderDto, UpdateFolderDto } from './folders.dto';
@@ -14,6 +14,8 @@ type FolderRow = {
 
 @Injectable()
 export class FoldersService {
+  private readonly logger = new Logger(FoldersService.name);
+
   constructor(
     private readonly database: DatabaseService,
     private readonly store: InMemoryStore,
@@ -69,88 +71,103 @@ export class FoldersService {
   }
 
   async create(createFolderDto: CreateFolderDto, userId?: number) {
-    if (this.database.isAvailable()) {
-      const result = await this.database.query<FolderRow>(
-        `INSERT INTO folders (name, parent_id, user_id)
-         VALUES ($1, $2, $3)
-         RETURNING id, name, parent_id, user_id, created_at, updated_at`,
-        [createFolderDto.name, createFolderDto.parentId ?? null, userId ?? null],
-      );
+    try {
+      if (this.database.isAvailable()) {
+        const result = await this.database.query<FolderRow>(
+          `INSERT INTO folders (name, parent_id, user_id)
+           VALUES ($1, $2, $3)
+           RETURNING id, name, parent_id, user_id, created_at, updated_at`,
+          [createFolderDto.name, createFolderDto.parentId ?? null, userId ?? null],
+        );
 
-      return this.mapRow(result.rows[0]);
+        return this.mapRow(result.rows[0]);
+      }
+
+      const timestamp = new Date().toISOString();
+      const folder: StoredFolder = {
+        id: this.store.nextFolderId(),
+        userId,
+        name: createFolderDto.name,
+        parentId: createFolderDto.parentId,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+      };
+
+      this.store.folders.push(folder);
+
+      return folder;
+    } catch (error) {
+      this.logger.error(`Failed to create folder: ${error}`);
+      throw error;
     }
-
-    const timestamp = new Date().toISOString();
-    const folder: StoredFolder = {
-      id: this.store.nextFolderId(),
-      userId,
-      name: createFolderDto.name,
-      parentId: createFolderDto.parentId,
-      createdAt: timestamp,
-      updatedAt: timestamp,
-    };
-
-    this.store.folders.push(folder);
-
-    return folder;
   }
 
   async update(id: number, updateFolderDto: UpdateFolderDto, userId?: number) {
-    if (this.database.isAvailable()) {
-      const current = await this.findOne(id, userId);
-      const result = await this.database.query<FolderRow>(
-        `UPDATE folders
-         SET name = $2, parent_id = $3, updated_at = NOW()
-         WHERE id = $1
-         RETURNING id, name, parent_id, user_id, created_at, updated_at`,
-        [
-          id,
-          updateFolderDto.name ?? current.name,
-          updateFolderDto.parentId ?? current.parentId ?? null,
-        ],
-      );
+    try {
+      if (this.database.isAvailable()) {
+        const current = await this.findOne(id, userId);
+        const result = await this.database.query<FolderRow>(
+          `UPDATE folders
+           SET name = $2, parent_id = $3, updated_at = NOW()
+           WHERE id = $1
+           RETURNING id, name, parent_id, user_id, created_at, updated_at`,
+          [
+            id,
+            updateFolderDto.name ?? current.name,
+            updateFolderDto.parentId ?? current.parentId ?? null,
+          ],
+        );
 
-      return this.mapRow(result.rows[0]);
+        return this.mapRow(result.rows[0]);
+      }
+
+      const folder = await this.findOne(id, userId);
+
+      Object.assign(folder, updateFolderDto);
+      folder.updatedAt = new Date().toISOString();
+
+      return folder;
+    } catch (error) {
+      this.logger.error(`Failed to update folder ${id}: ${error}`);
+      throw error;
     }
-
-    const folder = await this.findOne(id, userId);
-
-    Object.assign(folder, updateFolderDto);
-    folder.updatedAt = new Date().toISOString();
-
-    return folder;
   }
 
   async remove(id: number, userId?: number) {
-    if (this.database.isAvailable()) {
-      const userFilter = userId ? 'AND user_id = $2' : '';
-      const result = await this.database.query<FolderRow>(
-        `DELETE FROM folders
-         WHERE id = $1 ${userFilter}
-         RETURNING id, name, parent_id, user_id, created_at, updated_at`,
-        userId ? [id, userId] : [id],
+    try {
+      if (this.database.isAvailable()) {
+        const userFilter = userId ? 'AND user_id = $2' : '';
+        const result = await this.database.query<FolderRow>(
+          `DELETE FROM folders
+           WHERE id = $1 ${userFilter}
+           RETURNING id, name, parent_id, user_id, created_at, updated_at`,
+          userId ? [id, userId] : [id],
+        );
+
+        const folder = result.rows[0];
+
+        if (!folder) {
+          throw new NotFoundException(`Folder with id ${id} was not found`);
+        }
+
+        return this.mapRow(folder);
+      }
+
+      const idx = this.store.folders.findIndex(
+        (folder) => folder.id === id && (!userId || folder.userId === userId),
       );
 
-      const folder = result.rows[0];
-
-      if (!folder) {
+      if (idx === -1) {
         throw new NotFoundException(`Folder with id ${id} was not found`);
       }
 
-      return this.mapRow(folder);
+      const [removed] = this.store.folders.splice(idx, 1);
+
+      return removed;
+    } catch (error) {
+      this.logger.error(`Failed to delete folder ${id}: ${error}`);
+      throw error;
     }
-
-    const idx = this.store.folders.findIndex(
-      (folder) => folder.id === id && (!userId || folder.userId === userId),
-    );
-
-    if (idx === -1) {
-      throw new NotFoundException(`Folder with id ${id} was not found`);
-    }
-
-    const [removed] = this.store.folders.splice(idx, 1);
-
-    return removed;
   }
 
   private mapRow(row: FolderRow): StoredFolder {
