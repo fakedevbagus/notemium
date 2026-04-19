@@ -1,19 +1,22 @@
-# Notepad Pro Frontend
+# Notemium Frontend
 
-Next.js (React) app for Notepad Pro.
+Next.js (React 19) application for Notemium.
 
 - TypeScript, Tailwind CSS, Zustand
-- Modern UI/UX, responsive, dark/light mode
-- See `/docs` for requirements
+- App Router with server/client components
+- Persistent dark/light/system theme
+- See `/docs` for architecture details
+
+## Development
+
+```bash
+npm run dev    # http://localhost:3000
+npm run build  # Production build
+npm run lint   # ESLint
+```
 
 ## Testing
 
-- **Test Runner:** Jest
-- **Test Utilities:** @testing-library/react, jest-environment-jsdom
-- **Test Location:** `src/components/**/*.test.tsx`
-- **How to Run:**
-	```sh
-	npx jest
-	```
-- **Coverage:** All major UI components and pages, including loading, error, and main UI states.
-- **Config:** Babel and Jest configs at monorepo root; `jest.setup.js` for custom matchers/mocks.
+- **Runner:** Jest with @testing-library/react
+- **Location:** `src/components/**/*.test.tsx`
+- **Run:** `npx jest`

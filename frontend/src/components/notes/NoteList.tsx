@@ -9,15 +9,24 @@ export interface NoteListNote {
 
 export default function NoteList({ notes, onSelect, selectedId }: { notes: NoteListNote[]; onSelect: (id: number) => void; selectedId: number | null }) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       {notes.map(note => (
         <div
           key={note.id}
-          className={`p-3 rounded cursor-pointer border transition-colors ${selectedId === note.id ? 'bg-blue-100 dark:bg-blue-900 border-blue-400' : 'hover:bg-gray-100 dark:hover:bg-gray-800 border-transparent'}`}
+          role="button"
+          tabIndex={0}
+          className={`p-3 rounded-lg cursor-pointer border transition-all duration-150
+            ${selectedId === note.id
+              ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700 shadow-sm'
+              : 'hover:bg-gray-50 dark:hover:bg-gray-800/60 border-transparent hover:border-gray-200 dark:hover:border-gray-700'
+            }`}
           onClick={() => onSelect(note.id)}
+          onKeyDown={(e) => { if (e.key === 'Enter') onSelect(note.id); }}
         >
-          <div className="font-semibold">{note.title}</div>
-          <div className="text-sm text-gray-500 dark:text-gray-400 truncate">{note.snippet || note.content?.slice(0, 60)}</div>
+          <div className="font-semibold text-sm">{note.title || 'Untitled'}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
+            {note.snippet || note.content?.slice(0, 80) || 'No content'}
+          </div>
         </div>
       ))}
     </div>

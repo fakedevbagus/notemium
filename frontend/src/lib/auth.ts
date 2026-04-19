@@ -1,4 +1,4 @@
-const TOKEN_KEY = 'notepad.accessToken';
+const TOKEN_KEY = 'notemium.accessToken';
 
 export type AuthUser = {
   id: number;

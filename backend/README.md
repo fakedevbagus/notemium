@@ -1,30 +1,28 @@
-# Notepad Pro Backend
+# Notemium Backend
 
-Node.js (NestJS/Express) API for Notepad Pro.
+NestJS API server for Notemium.
 
-- Modular, scalable, secure
-- REST endpoints for auth, notes, folders, search, collaboration, versioning, and AI helpers
-- PostgreSQL persistence with in-memory fallback for local tests
-- JWT authentication with per-user ownership for notes/folders when a bearer token is present
-- See `/docs` for requirements
+- Modular architecture with REST endpoints
+- Auth, Notes, Folders, Search, Collaboration, Versioning, AI
+- PostgreSQL persistence with in-memory fallback
+- JWT authentication with optional per-user ownership
+
+## Development
+
+```bash
+npm run start:dev  # http://localhost:3001 (watch mode)
+npm run build      # Compile TypeScript
+```
 
 ## Migrations
 
-Build and apply migrations against a reachable PostgreSQL database:
-
-```sh
+```bash
 npm run build
 npm run migrate
 ```
 
 ## Testing
 
-- **Test Runner:** Jest (with ts-jest)
-- **Test Utilities:** @nestjs/testing, supertest
-- **Test Location:** `test/*.e2e-spec.ts`
-- **How to Run:**
-	```sh
-	npx jest --runInBand test/
-	```
-- **Coverage:** All API endpoints (CRUD for notes, folders, search, etc.)
-- **Config:** In-memory service logic for isolated e2e tests.
+- **Runner:** Jest with ts-jest
+- **Location:** `test/*.e2e-spec.ts`
+- **Run:** `npx jest --runInBand test/`

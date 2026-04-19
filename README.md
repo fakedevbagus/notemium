@@ -1,69 +1,110 @@
-# Notepad Pro
+# Notemium
 
-A professional-grade, feature-rich, and scalable Notepad / note-taking web application inspired by Notion, Evernote, OneNote, and Google Keep.
+A professional-grade, feature-rich note-taking web application built with **Next.js** and **NestJS**.
 
-## Monorepo Structure
+## ✨ Features
 
-- `frontend/` - Next.js (React) application
-- `backend/` - NestJS API
-- `database/` - Database schemas, migrations, and seeds
-- `tests/` - Cross-project integration and quality checks
-- `docs/` - Project documentation
-- `infrastructure/` - Deployment and infrastructure assets
-- `scripts/` - Utility scripts
+- **Notes** — Create, edit, delete, pin, archive, and organize notes
+- **Folders** — Organize notes into folders with nested support
+- **Search** — Full-text search across notes and folders
+- **Authentication** — JWT-based auth with per-user note ownership
+- **Dark mode** — Persistent light/dark/system theme with localStorage
+- **Collaboration** — Invite collaborators and comment on shared notes
+- **Versioning** — Automatic note history with compare and restore
+- **AI helpers** — Summarize, rewrite, auto-tag, and semantic search
+- **Responsive UI** — Tailwind CSS with smooth transitions
 
-## Workspace Requirements
+## 🏗 Tech Stack
+
+| Layer     | Technology                        |
+|-----------|-----------------------------------|
+| Frontend  | Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS, Zustand |
+| Backend   | NestJS 11, TypeScript, PostgreSQL, JWT |
+| Testing   | Jest, Testing Library, Supertest  |
+| Infra     | Docker Compose, PostgreSQL 15     |
+
+## 📁 Monorepo Structure
+
+```
+├── frontend/     # Next.js application (port 3000)
+├── backend/      # NestJS API server (port 3001)
+├── database/     # Database schemas and seeds
+├── docs/         # Project documentation
+├── tests/        # Cross-project integration tests
+├── infrastructure/
+└── scripts/
+```
+
+## 🚀 Getting Started
+
+### Prerequisites
 
 - Node.js 20+
-- npm 10+ with workspace support
+- npm 10+
 
-This repository is configured as an npm workspace monorepo. Use the root `package-lock.json` as the source of truth for dependency resolution.
+### Setup
 
-## Getting Started
+1. **Clone and install**
+   ```bash
+   git clone <repo-url>
+   cd notemium
+   npm install
+   ```
 
-1. Copy the example environment file:
-   - Windows: `copy .env.example .env`
-   - macOS/Linux: `cp .env.example .env`
-2. Install dependencies:
-   - `npm install`
-3. Start the applications in separate terminals:
-   - `npm run dev:backend`
-   - `npm run dev:frontend`
+2. **Configure environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your values
+   ```
 
-The backend uses PostgreSQL when `DATABASE_URL` or the `DATABASE_*` environment variables point to a reachable database. If PostgreSQL is unavailable in local tests, the API falls back to in-memory storage.
+3. **Start development servers**
+   ```bash
+   # Terminal 1 — Backend (http://localhost:3001)
+   npm run dev:backend
 
-Auth is available through `POST /api/auth/register`, `POST /api/auth/login`, and `GET /api/auth/me`. Notes, folders, and search are scoped to the authenticated user when an `Authorization: Bearer <token>` header is present; unauthenticated requests remain supported for local development and legacy tests.
+   # Terminal 2 — Frontend (http://localhost:3000)
+   npm run dev:frontend
+   ```
 
-## Root Scripts
+> **Note:** PostgreSQL is optional for local development. If unavailable, the backend automatically falls back to in-memory storage.
 
-- `npm run dev:frontend` - Start the Next.js development server
-- `npm run dev:backend` - Start the NestJS development server
-- `npm run build:frontend` - Build the frontend
-- `npm run build:backend` - Build the backend
-- `npm run build` - Build all workspaces
-- `npm run migrate:backend` - Build the backend and apply database migrations
-- `npm run test:frontend` - Run frontend tests
-- `npm run test:backend` - Run backend tests
-- `npm test` - Run all workspace tests
-- `npm run lint:frontend` - Run frontend linting
-- `npm run typecheck` - Type-check all workspaces
+## 🔧 Available Scripts
 
-## Docker Compose
+| Command | Description |
+|---------|-------------|
+| `npm run dev:frontend` | Start Next.js dev server |
+| `npm run dev:backend` | Start NestJS dev server |
+| `npm run build` | Build all workspaces |
+| `npm run migrate:backend` | Apply database migrations |
+| `npm test` | Run all tests |
+| `npm run typecheck` | Type-check all workspaces |
+| `npm run lint` | Lint frontend |
+| `npm run quality` | Lint + typecheck + test |
 
-The root `docker-compose.yml` provides local dependencies for development:
+## 🔑 Environment Variables
 
-- `db` - PostgreSQL 15 with a named data volume
-- `backend` - NestJS service built from `backend/Dockerfile.backend`
-- `frontend` - Next.js service built from `frontend/Dockerfile.frontend`
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `NEXT_PUBLIC_API_BASE_URL` | Backend API URL | `http://localhost:3001/api` |
+| `DATABASE_URL` | PostgreSQL connection string | — |
+| `JWT_SECRET` | Secret for JWT signing | — |
+| `AI_API_KEY` | API key for AI features | — |
 
-Before running Docker Compose, create a local `.env` file from `.env.example`.
+## 🐳 Docker Compose
 
-Inside Docker Compose, the backend overrides `DATABASE_URL` to point at the `db` service. For local non-Docker migrations, start PostgreSQL first and then run `npm run migrate:backend`.
+```bash
+cp .env.example .env
+docker compose up
+```
 
-## Documentation
+Services: `frontend` (3000), `backend` (3001), `db` (PostgreSQL 5432).
 
-- Root docs index: `docs/README.md`
+## 📚 Documentation
 
-## Notes
+- [Architecture](docs/architecture.md)
+- [API Reference](docs/api.md)
+- [Setup Guide](docs/setup.md)
 
-- Keep secrets out of version control. Use `.env` locally and secure secret management in deployment environments.
+## 📄 License
+
+[MIT](LICENSE)

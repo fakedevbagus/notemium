@@ -1,5 +1,5 @@
 {
-  "name": "notepad-pro-monorepo",
+  "name": "notemium",
   "private": true,
   "workspaces": [
     "frontend",
